@@ -1,4 +1,4 @@
-package com.borlot.marketapp;
+package com.borlot.marketapp.api.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,6 @@ public class HelloWorldController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public void ping(){
-        System.out.println("Hello World!!!");
+        System.out.println("Hello World!!");
     }
 }
