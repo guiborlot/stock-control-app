@@ -12,7 +12,7 @@ public class HelloWorldController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public void ping(){
-        System.out.println("Hello World!!");
+    public String ping(){
+        return "Hello World!!!";
     }
 }
