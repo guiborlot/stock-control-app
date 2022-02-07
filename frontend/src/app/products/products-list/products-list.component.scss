@@ -1,0 +1,12 @@
+table{
+    width: 100%;
+}
+
+mat-card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+mat-card-header>button{
+    margin: 0px 15px 15px 0px;   
+}

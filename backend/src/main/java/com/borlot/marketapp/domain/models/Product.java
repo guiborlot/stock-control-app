@@ -1,7 +1,6 @@
 package com.borlot.marketapp.domain.models;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -36,7 +35,6 @@ public class Product {
     private String price;
 
     @NotNull
-    @Max(99999)
     private Integer quantity;
 
 }

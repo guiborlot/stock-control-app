@@ -1,0 +1,44 @@
+<form [formGroup]="form">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>New Product</mat-card-title>
+        </mat-card-header>
+    </mat-card>
+    <mat-grid-list cols="2" rowHeight="100px">
+        <mat-grid-tile colspan="1">
+            <mat-form-field appearance="fill">
+                <mat-label for="name">Name</mat-label>
+                <input matInput formControlName="name" name="name" />
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1">
+            <mat-form-field appearance="fill">
+                <mat-label for="price">Price</mat-label>
+                <input matInput formControlName="price" name="price" type="number" placeholder="0" class="example-right-align"/>
+                <span matPrefix>$&nbsp;</span>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="2">
+            <mat-form-field>
+                <mat-label for="description">Description</mat-label>
+                <textarea
+                    matInput
+                    formControlName="description"
+                    name="description"
+                ></textarea>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <div style="margin-left: 30px;">
+        <button
+            type="submit"
+            mat-flat-button
+            color="primary"
+            (click)="onSubmit()"
+        >
+            Confirm
+        </button>
+        <button type="button" mat-button (click)="onCancel()">Cancel</button>
+    </div>
+</form>
