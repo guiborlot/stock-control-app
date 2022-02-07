@@ -42,10 +42,10 @@ public class ProductController {
 
     @PutMapping("/{productID}")
     public ResponseEntity<Product> update(@PathVariable Long productID, @Valid @RequestBody Product product){
-        if(!productRepository.existsById(productID)){
+
+        if(!productRepository.existsById(productID)) {
             return ResponseEntity.notFound().build();
         }
-        product.setId(productID);
         product = service.saveProduct(product);
 
         return ResponseEntity.ok(product);

@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { Product } from "../product";
 import { ProductsService } from "../products.service";
@@ -14,39 +14,43 @@ export class ProductsFormComponent implements OnInit {
     form!: FormGroup;
     submitted = false;
 
-    categories$!: any;
-
     constructor(
         private service: ProductsService,
         private fb: FormBuilder,
         private route: ActivatedRoute,
-        private dialogRef: MatDialogRef<ProductsFormComponent>
+        private dialogRef: MatDialogRef<ProductsFormComponent>,
+        @Inject(MAT_DIALOG_DATA) public product: any
     ) {}
 
     ngOnInit(): void {
 
         this.form = this.fb.group({
-            id: [null],
+            id: [this.product.dataKey.id],
             name: [
-                null,[
+                this.product.dataKey.name,[
                     Validators.required,
                     Validators.minLength(2),
                     Validators.maxLength(20)
                 ]
             ],
-            price: [
-                null,[
+            category: [
+                this.product.dataKey.category,[
                     Validators.required,
-                    Validators.minLength(1)
+                    Validators.minLength(2)
                 ]
             ],
-            description: [
-                null,[
-                    Validators.maxLength(250)
+            price: [
+                this.product.dataKey.price,[
+                    Validators.required,
+                    Validators.maxLength(10)
                 ]
             ],
-            categories:[
-                null
+            quantity:[
+                this.product.dataKey.quantity,[
+                    Validators.required,
+                    Validators.maxLength(5),
+                    Validators.pattern('^\\d+$')
+                ]
             ]
             // categories: [
             //     this.product.categories,[
@@ -58,12 +62,12 @@ export class ProductsFormComponent implements OnInit {
 
     onSubmit() {
         console.log(this.form.value)
-        this.service.create(this.form.value).subscribe({
+        this.service.save(this.form.value).subscribe({
             next: () => console.log,
             error: () => console.log
         })
         this.dialogRef.close();
-        this.form.reset()
+        this.form.reset();
     }
 
     onCancel() {

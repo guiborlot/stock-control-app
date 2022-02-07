@@ -19,9 +19,9 @@ export class ProductResolverGuard implements Resolve<Product> {
         return of({
             id: null,
             name: null,
+            category: null,
             price: null,
-            description: null,
-            categories: null
+            quantity: null
         });
     }
   

@@ -19,7 +19,22 @@ export class ProductsService {
         return this.http.get<Product>(`${this.API}/${id}`).pipe(take(1));
     }
 
-    create(product: any){
-        return this.http.post(`${this.API}`, product).pipe(take(1))
+    save(product: any){
+        if(product.id){
+            return this.update(product);
+        }
+        return this.create(product);
+    }
+
+    private create(product: any){
+        return this.http.post(`${this.API}`, product).pipe(take(1));
+    }
+
+    private update(product: any){
+        return this.http.put(`${this.API}/${product.id}`, product).pipe(take(1));
+    }
+
+    delete(id: number){
+        return this.http.delete(`${this.API}/${id}`).pipe(take(1));
     }
 }

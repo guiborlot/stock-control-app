@@ -34,6 +34,14 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td *matCellDef="let products">
+                    <button mat-flat-button color="primary" (click)="onEdit(products)">Edit</button>
+                    <button mat-stroked-button color="warn" (click)="onDelete(products.id)">Delete</button>
+                </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
