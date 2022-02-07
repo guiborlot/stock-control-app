@@ -36,7 +36,7 @@ public class Product {
     private String price;
 
     @NotNull
-    @Max(5)
+    @Max(99999)
     private Integer quantity;
 
 }

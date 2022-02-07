@@ -7,17 +7,11 @@ import com.borlot.marketapp.domain.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/products")
@@ -45,5 +39,28 @@ public class ProductController {
 
         return service.saveProduct(product);
     }
+
+    @PutMapping("/{productID}")
+    public ResponseEntity<Product> update(@PathVariable Long productID, @Valid @RequestBody Product product){
+        if(!productRepository.existsById(productID)){
+            return ResponseEntity.notFound().build();
+        }
+        product.setId(productID);
+        product = service.saveProduct(product);
+
+        return ResponseEntity.ok(product);
+    }
+
+    @DeleteMapping("/{productID}")
+    public ResponseEntity<Void> delete(@PathVariable Long productID){
+        if(!productRepository.existsById(productID)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        service.delete(productID);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
