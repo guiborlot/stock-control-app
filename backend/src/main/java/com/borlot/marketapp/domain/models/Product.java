@@ -1,18 +1,21 @@
 package com.borlot.marketapp.domain.models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "Product")
+@Table(name = "product")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
 
     @Id
@@ -22,7 +25,7 @@ public class Product {
 
     @NotBlank
     @Size(max = 60)
-    private String nome;
+    private String name;
 
     @NotBlank
     @Size(max = 60)
@@ -31,5 +34,9 @@ public class Product {
     @NotBlank
     @Size(max = 20)
     private String price;
+
+    @NotNull
+    @Max(5)
+    private Integer quantity;
 
 }
