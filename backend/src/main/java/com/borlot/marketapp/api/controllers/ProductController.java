@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
     @Autowired
@@ -23,6 +24,7 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping()
     public List<Product> listProducts() {
         return productRepository.findAll();
