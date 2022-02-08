@@ -16,10 +16,11 @@ public class Instantiation implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-    //     Product product1 = new Product(null, "mouse", "eletronicos", "1200.00", 5);
-    //     Product product2 = new Product(null, "Mouse", "perifericos", "100.00");
-    //     Product product3 = new Product(null, "PC", "eletronicos", "1500.00");
+        Product product1 = new Product(null, "Computer", "Electronics", 1200.0, 5);
+        Product product2 = new Product(null, "Mouse", "Electronics", 200.0, 7);
+        Product product3 = new Product(null, "Keyboard", "Electronics", 100.0, 15);
+        Product product4 = new Product(null, "Ferrari", "Cars", 5000000.0, 1);
 
-    //     productRepository.saveAll(Arrays.asList(product1, product2, product3));
+        productRepository.saveAll(Arrays.asList(product1, product2, product3, product4));
     }
 }

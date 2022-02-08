@@ -56,8 +56,9 @@ export class ProductsListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            console.log("The dialog was closed");
-            window.location.reload();
+            if(result !== undefined){
+                window.location.reload();
+            }
         });
 
     }

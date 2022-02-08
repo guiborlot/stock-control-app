@@ -3,9 +3,7 @@ package com.borlot.marketapp.domain.models;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -29,9 +27,9 @@ public class Product {
     @Size(max = 60)
     private String category;
 
-    @NotBlank
-    @Size(max = 20)
-    private String price;
+    @NotNull
+    @Digits(integer = 9, fraction = 2)
+    private Double price;
 
     @NotNull
     private Integer quantity;
