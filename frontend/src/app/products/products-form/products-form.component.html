@@ -14,8 +14,7 @@
         <mat-grid-tile colspan="1">
             <mat-form-field appearance="fill">
                 <mat-label for="price">Price</mat-label>
-                <input matInput formControlName="price" name="price" type="number" placeholder="0" class="example-right-align"/>
-                <span matPrefix>$&nbsp;</span>
+                <input matInput formControlName="price" name="price" class="example-right-align" currencyMask/>
             </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile colspan="1">

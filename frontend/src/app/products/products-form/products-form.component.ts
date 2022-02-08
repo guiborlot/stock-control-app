@@ -61,13 +61,14 @@ export class ProductsFormComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.form.value)
-        this.service.save(this.form.value).subscribe({
-            next: (v) => this.dialogRef.close(v),
-            error: () => console.log
-        })
-        
-        this.form.reset();
+        if(this.form.valid){
+            this.service.save(this.form.value).subscribe({
+                next: (v) => this.dialogRef.close(v),
+                error: () => console.log
+            })
+            
+            this.form.reset();
+        }
     }
 
     onCancel() {

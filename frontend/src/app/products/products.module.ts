@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 
 
@@ -32,6 +33,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatCheckboxModule,
     MatDialogModule,
+    NgxCurrencyModule,
     ReactiveFormsModule,
     FormsModule
   ]
