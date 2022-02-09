@@ -19,20 +19,18 @@ import javax.validation.Valid;
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private ProductService service;
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping()
     public List<Product> listProducts() {
-        return productRepository.findAll();
+        return service
+                .listProducts();
     }
 
     @GetMapping("/{productID}")
     public ResponseEntity<Product> findProduct(@PathVariable Long productID) {
-        return productRepository.findById(productID).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return service.findProduct(productID);
     }
 
     @PostMapping
@@ -45,23 +43,13 @@ public class ProductController {
     @PutMapping("/{productID}")
     public ResponseEntity<Product> update(@PathVariable Long productID, @Valid @RequestBody Product product){
 
-        if(!productRepository.existsById(productID)) {
-            return ResponseEntity.notFound().build();
-        }
-        product = service.saveProduct(product);
-
-        return ResponseEntity.ok(product);
+        return service
+                .updateProduct(productID, product);
     }
 
     @DeleteMapping("/{productID}")
     public ResponseEntity<Void> delete(@PathVariable Long productID){
-        if(!productRepository.existsById(productID)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        service.delete(productID);
-
-        return ResponseEntity.noContent().build();
+        return service.deleteProduct(productID);
     }
 
 
