@@ -15,13 +15,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/products")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4201")
 public class ProductController {
 
     @Autowired
     private ProductService service;
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping()
     public List<Product> listProducts() {
         return service
