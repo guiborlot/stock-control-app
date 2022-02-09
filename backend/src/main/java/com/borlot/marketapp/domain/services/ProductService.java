@@ -30,12 +30,8 @@ public class ProductService {
     }
 
     @Transactional
-    public boolean deleteProduct(Long productID){
-        boolean productExists = (findProduct(productID).isPresent()) ? true : false;
-
+    public void deleteProduct(Long productID){
         productRepository.deleteById(productID);
-
-        return productExists;
     }
 
 

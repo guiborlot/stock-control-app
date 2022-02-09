@@ -52,7 +52,12 @@ public class ProductController {
 
     @DeleteMapping("/{productID}")
     public ResponseEntity<Void> delete(@PathVariable Long productID){
-        return (service.deleteProduct(productID) ? ResponseEntity.notFound().build() : ResponseEntity.noContent().build());
+        if(service.findProduct(productID).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        service.deleteProduct(productID);
+        return ResponseEntity.noContent().build();
     }
 
 
