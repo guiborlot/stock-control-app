@@ -1,4 +1,4 @@
-package com.borlot.marketapp;
+package com.borlot.marketapp.services;
 
 import com.borlot.marketapp.domain.models.Product;
 import com.borlot.marketapp.domain.repository.ProductRepository;
@@ -27,7 +27,7 @@ public class TestProductService {
     ProductRepository productRepository;
 
     @Test
-    public void productServiceTestSaveProduct(){
+    public void shouldSaveNewProduct(){
         Product product = new Product(null, "Mouse", "Electronics", 1100.0, 7);
 
         productService.saveProduct(product);
@@ -37,7 +37,7 @@ public class TestProductService {
     }
 
     @Test
-    public void productTestServiceListProduct(){
+    public void shouldListAllProducts(){
         List<Product> products = new ArrayList<>();
         products.add(new Product(null, "Computer", "Electronics", 1200.0, 5));
         products.add(new Product(null, "Mouse", "Electronics", 1100.0, 7));
@@ -50,7 +50,7 @@ public class TestProductService {
     }
 
     @Test
-    public void productTestServiceFindProduct(){
+    public void shouldFindAProduct(){
         Optional<Product> product = Optional.of(new Product(0L, "Mouse", "Electronics", 1100.0, 7));
 
         when(productRepository.findById(0L)).thenReturn(product);
@@ -60,7 +60,7 @@ public class TestProductService {
     }
 
     @Test
-    public void productTestServiceDeleteProduct(){
+    public void shouldRemoveAProduct(){
         Product expected = new Product(0L, "Mouse", "Electronics", 1100.0, 7);
 
         productService.deleteProduct(expected.getId());
