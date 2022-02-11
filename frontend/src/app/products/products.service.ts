@@ -32,6 +32,7 @@ export class ProductsService {
     }
 
     private update(product: any){
+        console.log(product);
         return this.http.put(`${this.API}/${product.id}`, product).pipe(take(1));
     }
 
