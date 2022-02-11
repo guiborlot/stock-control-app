@@ -46,6 +46,7 @@ public class ProductController {
         if(service.findProduct(productID).isEmpty()){
             return ResponseEntity.notFound().build();
         }
+        product.setId(productID);
         product = service.saveProduct(product);
 
         return ResponseEntity.ok(product);

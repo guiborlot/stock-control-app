@@ -40,6 +40,10 @@ public class ProductService {
         productRepository.deleteById(productID);
     }
 
+    public boolean existsProduct(Long productID) {
+        return productRepository.existsById(productID);
+    }
+
 
 
 

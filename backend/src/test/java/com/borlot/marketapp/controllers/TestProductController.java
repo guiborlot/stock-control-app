@@ -67,7 +67,7 @@ public class TestProductController {
     }
 
     @Test
-    public void shouldReturnNotFound_WhenFindProduct(){
+    public void shouldReturnNotFound_WhenFindProduct() {
         when(this.productService.findProduct(1L))
                 .thenReturn(Optional.empty());
 
@@ -80,7 +80,7 @@ public class TestProductController {
     }
 
     @Test
-    public void shouldReturnCreated_WhenAddProduct(){
+    public void shouldReturnCreated_WhenAddProduct() {
         Product product = new Product(1L, "Mouse", "Electronics", 1100.0, 7);
 
         when(this.productService.saveProduct(product))
@@ -97,7 +97,7 @@ public class TestProductController {
     }
 
     @Test
-    public void shouldReturnBadRequest_WhenAddProduct(){
+    public void shouldReturnBadRequest_WhenAddProduct() {
         Product product = new Product(1L, null, "Electronics", 1100.0, 8);
 
         when(this.productService.saveProduct(product))
@@ -111,5 +111,4 @@ public class TestProductController {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
-
 }
