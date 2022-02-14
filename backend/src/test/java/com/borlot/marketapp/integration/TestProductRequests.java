@@ -33,12 +33,12 @@ public class TestProductRequests {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void before(){
+    public void before() {
         addProductOnRepository();
     }
 
     @AfterEach
-    public void after(){
+    public void after() {
         productRepository.deleteAll();
         productRepository.flush();
     }
@@ -47,14 +47,14 @@ public class TestProductRequests {
     public void shouldReturnOk_WhenPerformGet() throws Exception {
         Product product = getProductFromRepository();
 
-        mockMvc.perform(get("/products/",product.getId())).andExpect(status().isOk());
+        mockMvc.perform(get("/products/", product.getId())).andExpect(status().isOk());
     }
 
     @Test
     public void shouldReturnOk_WhenPerformGetAll() throws Exception {
         List<Product> products = productRepository.findAll();
 
-         MvcResult mvcResult = mockMvc.perform(get("/products")).andExpect(status().isOk()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(get("/products")).andExpect(status().isOk()).andReturn();
 
         assertThat(objectMapper.writeValueAsString(products))
                 .isEqualTo(mvcResult.getResponse().getContentAsString());
@@ -86,16 +86,11 @@ public class TestProductRequests {
     public void shouldReturnOk_WhenPerformPut() throws Exception {
         Product product = getProductFromRepository();
 
-        MvcResult result = mockMvc.perform(put("/products/{productID}",product.getId())
+        mockMvc.perform(put("/products/{productID}", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new Product(null, "Keyboard", "Electronics", 1350.0, 15))))
-                .andExpect(status().isOk())
-                .andReturn();
-
-
-        assertThat(objectMapper.writeValueAsString(product))
-                .isNotEqualTo(result.getResponse().getContentAsString());
+                        .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isOk());
 
     }
 
@@ -104,17 +99,19 @@ public class TestProductRequests {
         mockMvc.perform(put("/products/150")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new Product(null, "Keyboard", "Electronics", 1350.0, 15))))
+                        .content(objectMapper.writeValueAsString(newProduct())))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnBadRequest_WhenPerformPutInvalidField() throws Exception {
         Product product = getProductFromRepository();
+        product.setName(null);
+
         mockMvc.perform(put("/products/{productID}", product.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Product(null, null, "Electronics", 1350.0, 15))))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(product)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -132,16 +129,15 @@ public class TestProductRequests {
     }
 
 
-
-    private Product newProduct(){
-         return new Product(null, "Mouse", "Electronics", 1100.0, 7);
+    private Product newProduct() {
+        return new Product(null, "Mouse", "Electronics", 1100.0, 7);
     }
 
-    private void addProductOnRepository(){
+    private void addProductOnRepository() {
         productRepository.save(newProduct());
     }
 
-    private Product getProductFromRepository(){
+    private Product getProductFromRepository() {
         List<Product> products = productRepository.findAll();
         return products.get(0);
     }
