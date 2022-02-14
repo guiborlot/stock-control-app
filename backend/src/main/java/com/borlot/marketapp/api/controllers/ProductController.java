@@ -1,13 +1,16 @@
 package com.borlot.marketapp.api.controllers;
 
+import com.borlot.marketapp.api.dto.ProductDTO;
 import com.borlot.marketapp.domain.models.Product;
 import com.borlot.marketapp.domain.services.ProductService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -21,35 +24,57 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<Product> listProducts() {
-        return service
-                .listProducts();
+    public List<ProductDTO> listProducts() {
+        List<Product> products = service.listProducts();
+
+        return products.stream().map(service::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     @GetMapping("/{productID}")
-    public ResponseEntity<Product> findProduct(@PathVariable Long productID) {
-        return service
-                .findProduct(productID)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProductDTO> findProduct(@PathVariable Long productID) {
+        Product product = service.findProduct(productID).orElse(null);
+        if(product == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(service.toDTO(product));
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Product addProduct(@Valid @RequestBody Product product) {
+    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
 
-        return service.saveProduct(product);
+        if(service.isProductValid(productDTO)){
+            Product product = service.fromDTO(productDTO);
+            service.saveProduct(product);
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
+            return ResponseEntity.created(uri).body(productDTO);
+        }
+        return ResponseEntity.badRequest().build();
+
     }
 
     @PutMapping("/{productID}")
-    public ResponseEntity<Product> update(@PathVariable Long productID, @Valid @RequestBody Product product){
-        if(service.findProduct(productID).isEmpty()){
+    public ResponseEntity<ProductDTO> update(@PathVariable Long productID, @Valid @RequestBody ProductDTO productDTO){
+
+        Product product = service.findProduct(productID).orElse(null);
+
+        if(product == null){
             return ResponseEntity.notFound().build();
+        } else if(!service.isProductValid(productDTO)){
+            return ResponseEntity.badRequest().build();
         }
+
         product.setId(productID);
+        product.setName(productDTO.getName());
+        product.setCategory(productDTO.getCategory());
+        product.setPrice(productDTO.getPrice());
+        product.setQuantity(productDTO.getQuantity());
+
         product = service.saveProduct(product);
 
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(service.toDTO(product));
     }
 
     @DeleteMapping("/{productID}")

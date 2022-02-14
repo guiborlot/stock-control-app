@@ -3,6 +3,7 @@ package com.borlot.marketapp.integration;
 import com.borlot.marketapp.domain.models.Product;
 import com.borlot.marketapp.domain.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,14 +37,17 @@ public class TestProductRequests {
         addProductOnRepository();
     }
 
+    @AfterEach
+    public void after(){
+        productRepository.deleteAll();
+        productRepository.flush();
+    }
+
     @Test
     public void shouldReturnOk_WhenPerformGet() throws Exception {
-        Product product = productRepository.findById(1L).orElse(null);
-        Product expected = newProduct();
-        expected.setId(1L);
+        Product product = getProductFromRepository();
 
-        mockMvc.perform(get("/products")).andExpect(status().isOk());
-        assertThat(product).isEqualTo(expected);
+        mockMvc.perform(get("/products/",product.getId())).andExpect(status().isOk());
     }
 
     @Test
@@ -79,9 +84,9 @@ public class TestProductRequests {
 
     @Test
     public void shouldReturnOk_WhenPerformPut() throws Exception {
-        Product product = productRepository.findById(1L).orElse(null);
+        Product product = getProductFromRepository();
 
-        MvcResult result = mockMvc.perform(put("/products/1")
+        MvcResult result = mockMvc.perform(put("/products/{productID}",product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new Product(null, "Keyboard", "Electronics", 1350.0, 15))))
@@ -96,7 +101,7 @@ public class TestProductRequests {
 
     @Test
     public void shouldReturnNotFound_WhenPerformPutInvalidId() throws Exception {
-        mockMvc.perform(put("/products/2")
+        mockMvc.perform(put("/products/150")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new Product(null, "Keyboard", "Electronics", 1350.0, 15))))
@@ -105,7 +110,8 @@ public class TestProductRequests {
 
     @Test
     public void shouldReturnBadRequest_WhenPerformPutInvalidField() throws Exception {
-        mockMvc.perform(put("/products/1")
+        Product product = getProductFromRepository();
+        mockMvc.perform(put("/products/{productID}", product.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Product(null, null, "Electronics", 1350.0, 15))))
@@ -114,7 +120,8 @@ public class TestProductRequests {
 
     @Test
     public void shouldReturnNoContent_WhenPerformDelete() throws Exception {
-        mockMvc.perform(delete("/products/1"))
+        Product product = getProductFromRepository();
+        mockMvc.perform(delete("/products/{productID}", product.getId()))
                 .andExpect(status().isNoContent());
     }
 
@@ -127,11 +134,16 @@ public class TestProductRequests {
 
 
     private Product newProduct(){
-         return new Product(1L, "Mouse", "Electronics", 1100.0, 7);
+         return new Product(null, "Mouse", "Electronics", 1100.0, 7);
     }
 
     private void addProductOnRepository(){
-        productRepository.saveAndFlush(newProduct());
+        productRepository.save(newProduct());
+    }
+
+    private Product getProductFromRepository(){
+        List<Product> products = productRepository.findAll();
+        return products.get(0);
     }
 
 }

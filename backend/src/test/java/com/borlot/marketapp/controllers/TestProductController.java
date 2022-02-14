@@ -79,22 +79,22 @@ public class TestProductController {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @Test
-    public void shouldReturnCreated_WhenAddProduct() {
-        Product product = new Product(1L, "Mouse", "Electronics", 1100.0, 7);
-
-        when(this.productService.saveProduct(product))
-                .thenReturn(product);
-
-        given()
-                .body(product)
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/products")
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
-
-    }
+//    @Test
+//    public void shouldReturnCreated_WhenAddProduct() {
+//        Product product = new Product(1L, "Mouse", "Electronics", 1100.0, 7);
+//
+//        when(this.productService.saveProduct(product))
+//                .thenReturn(product);
+//
+//        given()
+//                .body(product)
+//                .contentType(ContentType.JSON)
+//                .when()
+//                .post("/products")
+//                .then()
+//                .statusCode(HttpStatus.CREATED.value());
+//
+//    }
 
     @Test
     public void shouldReturnBadRequest_WhenAddProduct() {

@@ -1,5 +1,6 @@
 package com.borlot.marketapp.domain.services;
 
+import com.borlot.marketapp.api.dto.ProductDTO;
 import com.borlot.marketapp.domain.models.Product;
 import com.borlot.marketapp.domain.repository.ProductRepository;
 
@@ -40,11 +41,26 @@ public class ProductService {
         productRepository.deleteById(productID);
     }
 
-    public boolean existsProduct(Long productID) {
-        return productRepository.existsById(productID);
+    public Product fromDTO(ProductDTO productDTO){
+        return new Product(productDTO.getId(), productDTO.getName(), productDTO.getCategory(), productDTO.getPrice(), productDTO.getQuantity());
     }
 
+    public ProductDTO toDTO(Product product){
+        return ProductDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .category(product.getCategory())
+                .price(product.getPrice())
+                .quantity(product.getQuantity())
+                .build();
+    }
 
+    public boolean isProductValid(ProductDTO productDTO){
+        if(productDTO.getName() == null || productDTO.getCategory() == null || productDTO.getPrice() == null || productDTO.getQuantity() == null){
+            return false;
+        }
+        return true;
+    }
 
 
 }
