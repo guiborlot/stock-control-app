@@ -1,40 +1,46 @@
 package com.borlot.marketapp.api.controllers;
 
 import com.borlot.marketapp.api.dto.ProductDTO;
-import com.borlot.marketapp.domain.models.Product;
-import com.borlot.marketapp.domain.services.ProductService;
+import com.borlot.marketapp.api.services.ProductService;
+import com.borlot.marketapp.domain.entities.Product;
+import com.borlot.marketapp.domain.repository.ProductRepository;
+import com.borlot.marketapp.domain.services.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/products")
 @CrossOrigin(origins = "http://localhost:4201")
 public class ProductController {
 
+    private final ProductRepository repository;
+
     private final ProductService service;
 
-    public ProductController(ProductService service) {
+    public ProductController(ProductRepository repository, ProductService service) {
+        this.repository = repository;
         this.service = service;
     }
 
     @GetMapping()
     public List<ProductDTO> listProducts() {
-        List<Product> products = service.listProducts();
+        AllProducts allProducts = new AllProducts(repository);
+        List<Product> products = allProducts.execute();
+        Stream<ProductDTO> productDTO = products.stream().map(ProductDTO::new);
 
-        return products.stream().map(service::toDTO)
-                .collect(Collectors.toList());
-
+        return productDTO.collect(Collectors.toList());
     }
 
     @GetMapping("/{productID}")
     public ResponseEntity<ProductDTO> findProduct(@PathVariable Long productID) {
-        Product product = service.findProduct(productID).orElse(null);
+        FindProduct findProduct = new FindProduct(repository);
+        Product product = findProduct.execute(productID);
         if(product == null){
             return ResponseEntity.notFound().build();
         }
@@ -43,47 +49,34 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductDTO addProduct(@Valid @RequestBody ProductDTO productDTO) {
 
-        if(service.isProductValid(productDTO)){
-            Product product = service.fromDTO(productDTO);
-            service.saveProduct(product);
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
-            return ResponseEntity.created(uri).body(productDTO);
-        }
-        return ResponseEntity.badRequest().build();
+        SaveNewProduct saveNewProduct = new SaveNewProduct(repository);
+        Product product = saveNewProduct.execute(productDTO.toProduct());
+        return new ProductDTO(product);
 
     }
 
     @PutMapping("/{productID}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long productID, @Valid @RequestBody ProductDTO productDTO){
 
-        Product product = service.findProduct(productID).orElse(null);
+        FindProduct findProduct = new FindProduct(repository);
+        UpdateProduct updateProduct = new UpdateProduct(repository);
+        Product product = findProduct.execute(productID);
 
-        if(product == null){
-            return ResponseEntity.notFound().build();
-        } else if(!service.isProductValid(productDTO)){
-            return ResponseEntity.badRequest().build();
-        }
-
+        product = productDTO.toProduct();
         product.setId(productID);
-        product.setName(productDTO.getName());
-        product.setCategory(productDTO.getCategory());
-        product.setPrice(productDTO.getPrice());
-        product.setQuantity(productDTO.getQuantity());
 
-        product = service.saveProduct(product);
+        updateProduct.execute(product);
 
         return ResponseEntity.ok(service.toDTO(product));
     }
 
     @DeleteMapping("/{productID}")
     public ResponseEntity<Void> delete(@PathVariable Long productID){
-        if(!service.findProduct(productID).isPresent()){
-            return ResponseEntity.notFound().build();
-        }
-
-        service.deleteProduct(productID);
+        DeleteProduct deleteProduct = new DeleteProduct(repository);
+        deleteProduct.execute(productID);
         return ResponseEntity.noContent().build();
     }
 
