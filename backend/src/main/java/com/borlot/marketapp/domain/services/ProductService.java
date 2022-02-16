@@ -56,10 +56,7 @@ public class ProductService {
     }
 
     public boolean isProductValid(ProductDTO productDTO){
-        if(productDTO.getName() == null || productDTO.getCategory() == null || productDTO.getPrice() == null || productDTO.getQuantity() == null){
-            return false;
-        }
-        return true;
+        return productDTO.getName() != null && productDTO.getCategory() != null && productDTO.getPrice() != null && productDTO.getQuantity() != null;
     }
 
 

@@ -79,7 +79,7 @@ public class ProductController {
 
     @DeleteMapping("/{productID}")
     public ResponseEntity<Void> delete(@PathVariable Long productID){
-        if(service.findProduct(productID).isEmpty()){
+        if(!service.findProduct(productID).isPresent()){
             return ResponseEntity.notFound().build();
         }
 
